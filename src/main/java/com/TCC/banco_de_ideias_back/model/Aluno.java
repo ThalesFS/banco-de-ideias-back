@@ -3,18 +3,18 @@ package com.TCC.banco_de_ideias_back.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "professor")
-public class Professor {
+@Table(name = "aluno")
+public class Aluno {
 
     @Id
     private Long id; // mesmo ID do usuario
 
+    private String curso;
+
     @OneToOne
     @MapsId
     @JoinColumn(name = "id")
-    private Usuario usuario;
-
-    private String departamento;
+    private  Usuario usuario;
 
     public Long getId() {
         return id;
@@ -22,17 +22,16 @@ public class Professor {
     public void setId(Long id) {
         this.id = id;
     }
-    public String getDepartamento() {
-        return departamento;
+    public String getCurso() {
+        return curso;
     }
-    public void setDepartamento(String departamento) {
-        this.departamento = departamento;
+    public void setCurso(String curso) {
+        this.curso = curso;
     }
-
-    public Usuario getUsuario() {
+    public Usuario getUsuario(){
         return usuario;
     }
-    public void setUsuario(Usuario usuario) {
+    public void setUsuario(Usuario usuario){
         this.usuario = usuario;
     }
 }

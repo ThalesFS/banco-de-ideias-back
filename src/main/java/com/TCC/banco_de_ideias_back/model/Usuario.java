@@ -23,6 +23,16 @@ public class Usuario {
         professor
     }
 
+    public Usuario(){}
+
+    public Usuario(String nome, String email, String matricula, String senha, TipoUsuario tipo) {
+        this.nome = nome;
+        this.email = email;
+        this.matricula = matricula;
+        this.senha = senha;
+        this.tipo = tipo;
+    }
+
     public Long getId() {
         return id;
     }
@@ -61,6 +71,14 @@ public class Usuario {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public TipoUsuario getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoUsuario tipo) {
+        this.tipo = tipo;
     }
 }
 
