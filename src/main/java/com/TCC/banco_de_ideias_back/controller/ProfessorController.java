@@ -1,5 +1,6 @@
 package com.TCC.banco_de_ideias_back.controller;
 
+import com.TCC.banco_de_ideias_back.dto.ProfessorDTO;
 import com.TCC.banco_de_ideias_back.model.Professor;
 import com.TCC.banco_de_ideias_back.repository.ProfessorRepository;
 import com.TCC.banco_de_ideias_back.service.ProfessorService;
@@ -32,10 +33,10 @@ public class ProfessorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Professor> buscarPorId(@PathVariable Long id) {
-        Optional<Professor> professor = professorRepository.findById(id);
-        return professor.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<ProfessorDTO> buscarPorId(@PathVariable Long id) {
+        return professorRepository.findById(id)
+                .map(professor -> ResponseEntity.ok(new ProfessorDTO(professor)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}/senha")

@@ -1,5 +1,6 @@
 package com.TCC.banco_de_ideias_back.controller;
 
+import com.TCC.banco_de_ideias_back.dto.AlunoDTO;
 import com.TCC.banco_de_ideias_back.model.Aluno;
 import com.TCC.banco_de_ideias_back.repository.AlunoRepository;
 import com.TCC.banco_de_ideias_back.service.AlunoService;
@@ -27,12 +28,10 @@ public class AlunoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
-        Aluno aluno = alunoRepository.findById(id).orElse(null);
-        if (aluno == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(aluno);
+    public ResponseEntity<AlunoDTO> buscarPorId(@PathVariable Long id) {
+        return alunoRepository.findById(id)
+                .map(aluno -> ResponseEntity.ok(new AlunoDTO(aluno)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}/senha")

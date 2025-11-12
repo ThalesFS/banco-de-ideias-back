@@ -6,6 +6,7 @@ import com.TCC.banco_de_ideias_back.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,6 +16,10 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final AlunoRepository alunoRepository;
     private final ProfessorRepository professorRepository;
+
+    public List<Usuario> listar(){
+        return usuarioRepository.findAll();
+    }
 
     public UsuarioService(UsuarioRepository usuarioRepository, AlunoRepository alunoRepository, ProfessorRepository professorRepository) {
         this.usuarioRepository = usuarioRepository;
