@@ -3,11 +3,15 @@ package com.TCC.banco_de_ideias_back.service;
 import com.TCC.banco_de_ideias_back.dto.UsuarioCadastroDTO;
 import com.TCC.banco_de_ideias_back.model.*;
 import com.TCC.banco_de_ideias_back.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
 
+    @Autowired
     private final UsuarioRepository usuarioRepository;
     private final AlunoRepository alunoRepository;
     private final ProfessorRepository professorRepository;
@@ -40,6 +44,20 @@ public class UsuarioService {
         }
 
         return usuario;
+    }
+
+    public boolean atualizarSenha(Long usuarioId, String senhaAtual, String novaSenha) {
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(usuarioId);
+        if (usuarioOptional.isEmpty()) return false;
+
+        Usuario usuario = usuarioOptional.get();
+
+        if(!usuario.getSenha().equals(senhaAtual)){
+            return false; //senhas nao bateram
+        }
+        usuario.setSenha(novaSenha);
+        usuarioRepository.save(usuario);
+        return true;
     }
 
 }
