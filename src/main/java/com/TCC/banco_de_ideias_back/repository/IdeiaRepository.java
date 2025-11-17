@@ -15,5 +15,5 @@ public interface IdeiaRepository extends JpaRepository<Ideia, Long> {
 
     Page<Ideia> findByStatus(StatusIdeia statusIdeia, Pageable pageable);
 
-    Page<Ideia> findByTituloIgnoringCase(String titulo, Pageable pageable);
+    Page<Ideia> findByTituloContainingIgnoreCase(String titulo, Pageable pageable);
 }

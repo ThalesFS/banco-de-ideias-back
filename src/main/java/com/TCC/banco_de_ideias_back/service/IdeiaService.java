@@ -1,5 +1,6 @@
 package com.TCC.banco_de_ideias_back.service;
 
+import com.TCC.banco_de_ideias_back.dto.IdeiaDetalhesDTO;
 import com.TCC.banco_de_ideias_back.dto.IdeiaListaDTO;
 import com.TCC.banco_de_ideias_back.model.Ideia;
 import com.TCC.banco_de_ideias_back.model.Professor;
@@ -31,7 +32,7 @@ public class IdeiaService {
         Page<Ideia> resultados;
 
         if (busca != null && !busca.isEmpty()) {
-            resultados = repository.findByTituloIgnoringCase(busca, pageable);
+            resultados = repository.findByTituloContainingIgnoreCase(busca, pageable);
         } else if (statusIdeia != null) {
             resultados = repository.findByStatus(statusIdeia, pageable);
         } else {
@@ -51,11 +52,28 @@ public class IdeiaService {
         });
     }
 
-
-
     public IdeiaService(IdeiaRepository repository, ProfessorRepository professorRepository) {
         this.repository = repository;
         this.professorRepository = professorRepository;
+    }
+
+    public IdeiaDetalhesDTO buscarPorId(Long id) {
+        Ideia ideia = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ideia não encontrada"));
+
+        Professor professor = professorRepository.findById(ideia.getProfessorId()).orElse(null);
+
+        return new IdeiaDetalhesDTO(
+                ideia.getId(),
+                ideia.getTitulo(),
+                ideia.getDescricao(),
+                ideia.getCursos(),
+                ideia.getTecnologias(),
+                ideia.getStatus(),
+                professor != null ? professor.getUsuario().getNome() : "Desconhecido",
+                professor != null ? professor.getDepartamento() : "-",
+                professor != null ? professor.getUsuario().getEmail() : "-"
+        );
     }
 
     public Ideia salvar(Ideia ideia) {

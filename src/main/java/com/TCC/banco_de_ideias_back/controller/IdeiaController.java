@@ -1,5 +1,6 @@
 package com.TCC.banco_de_ideias_back.controller;
 
+import com.TCC.banco_de_ideias_back.dto.IdeiaDetalhesDTO;
 import com.TCC.banco_de_ideias_back.dto.IdeiaListaDTO;
 import com.TCC.banco_de_ideias_back.model.Ideia;
 import com.TCC.banco_de_ideias_back.model.StatusIdeia;
@@ -43,6 +44,11 @@ public class IdeiaController {
     @GetMapping("/all")
     public List<Ideia> listar() {
         return service.listar();
+    }
+
+    @GetMapping("/{id}")
+    public IdeiaDetalhesDTO buscarPorId(@PathVariable Long id) {
+        return service.buscarPorId(id);
     }
 
     //Lista todas as ideias de um professor pelo seu ID
