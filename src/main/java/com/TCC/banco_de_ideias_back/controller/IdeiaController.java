@@ -2,13 +2,16 @@ package com.TCC.banco_de_ideias_back.controller;
 
 import com.TCC.banco_de_ideias_back.dto.IdeiaDetalhesDTO;
 import com.TCC.banco_de_ideias_back.dto.IdeiaListaDTO;
+import com.TCC.banco_de_ideias_back.dto.IdeiaUpdateDTO;
 import com.TCC.banco_de_ideias_back.model.Ideia;
 import com.TCC.banco_de_ideias_back.model.StatusIdeia;
 import com.TCC.banco_de_ideias_back.service.IdeiaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.data.domain.Page;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -49,6 +52,22 @@ public class IdeiaController {
     @GetMapping("/{id}")
     public IdeiaDetalhesDTO buscarPorId(@PathVariable Long id) {
         return service.buscarPorId(id);
+    }
+
+    @PutMapping("/{id}")
+    public Ideia atualizar(@PathVariable Long id,
+                           @RequestBody IdeiaUpdateDTO dto,
+                           @RequestHeader("X-Professor-Id") Long professorId) {
+        return service.atualizar(id, dto, professorId);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(
+            @PathVariable Long id,
+            @RequestHeader("X-Professor-Id") Long professorId
+    ) {
+        service.deletar(id, professorId);
+        return ResponseEntity.noContent().build();
     }
 
     //Lista todas as ideias de um professor pelo seu ID
