@@ -2,43 +2,29 @@ package com.TCC.banco_de_ideias_back.dto;
 
 import com.TCC.banco_de_ideias_back.model.*;
 
-public class IdeiaDetalhesDTO {
+public class IdeiaResponseDTO {
 
     private Long id;
+    private Long professorId;
     private String titulo;
     private String descricao;
     private String cursos;
     private String tecnologias;
-    private StatusIdeia status;
-
-    private Long professorId;
+    private String status;
     private String professorNome;
     private String professorDepartamento;
-    private String professorEmail;
 
-    public IdeiaDetalhesDTO(Long id,
-                            String titulo,
-                            String descricao,
-                            String cursos,
-                            String tecnologias,
-                            StatusIdeia status,
-                            String professorNome,
-                            String professorDepartamento,
-                            String professorEmail,
-                            Long professorId
-                            ){
-        this.id = id;
-        this.titulo = titulo;
-        this.descricao = descricao;
-        this.cursos = cursos;
-        this.tecnologias = tecnologias;
-        this.status = status;
-        this.professorNome = professorNome;
-        this.professorDepartamento = professorDepartamento;
-        this.professorEmail = professorEmail;
-        this.professorId = professorId;
+    public IdeiaResponseDTO(Ideia ideia) {
+        this.id = ideia.getId();
+        this.professorId = ideia.getProfessor().getId();
+        this.titulo = ideia.getTitulo();
+        this.descricao = ideia.getDescricao();
+        this.cursos = ideia.getCursos();
+        this.tecnologias = ideia.getTecnologias();
+        this.status = ideia.getStatus().name();
+        this.professorNome = ideia.getProfessor().getUsuario().getNome();
+        this.professorDepartamento = ideia.getProfessor().getDepartamento();
     }
-
 
     public Long getId() {
         return id;
@@ -46,6 +32,14 @@ public class IdeiaDetalhesDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getProfessorId() {
+        return professorId;
+    }
+
+    public void setProfessorId(Long professorId) {
+        this.professorId = professorId;
     }
 
     public String getTitulo() {
@@ -80,11 +74,11 @@ public class IdeiaDetalhesDTO {
         this.tecnologias = tecnologias;
     }
 
-    public StatusIdeia getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(StatusIdeia status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -102,21 +96,5 @@ public class IdeiaDetalhesDTO {
 
     public void setProfessorDepartamento(String professorDepartamento) {
         this.professorDepartamento = professorDepartamento;
-    }
-
-    public String getProfessorEmail() {
-        return professorEmail;
-    }
-
-    public void setProfessorEmail(String professorEmail) {
-        this.professorEmail = professorEmail;
-    }
-
-    public Long getProfessorId() {
-        return id;
-    }
-
-    public void setProfessorId(Long id) {
-        this.id = id;
     }
 }

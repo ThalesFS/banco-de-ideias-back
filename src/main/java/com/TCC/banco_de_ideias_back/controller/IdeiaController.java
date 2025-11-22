@@ -1,8 +1,6 @@
 package com.TCC.banco_de_ideias_back.controller;
 
-import com.TCC.banco_de_ideias_back.dto.IdeiaDetalhesDTO;
-import com.TCC.banco_de_ideias_back.dto.IdeiaListaDTO;
-import com.TCC.banco_de_ideias_back.dto.IdeiaUpdateDTO;
+import com.TCC.banco_de_ideias_back.dto.*;
 import com.TCC.banco_de_ideias_back.model.Ideia;
 import com.TCC.banco_de_ideias_back.model.StatusIdeia;
 import com.TCC.banco_de_ideias_back.service.IdeiaService;
@@ -31,8 +29,9 @@ public class IdeiaController {
     }
 
     @PostMapping
-    public Ideia salvar(@RequestBody Ideia ideia) {
-        return service.salvar(ideia);
+    public ResponseEntity<IdeiaResponseDTO> salvar(@RequestBody IdeiaCriacaoDTO dto) {
+        IdeiaResponseDTO resposta = service.salvar(dto);
+        return ResponseEntity.ok(resposta);
     }
 
     //GET ideias listadas (parametros possiveis: busca textual, status, pagina, quantidade de itens por pagina)
@@ -50,15 +49,18 @@ public class IdeiaController {
     }
 
     @GetMapping("/{id}")
-    public IdeiaDetalhesDTO buscarPorId(@PathVariable Long id) {
-        return service.buscarPorId(id);
+    public ResponseEntity<IdeiaResponseDTO> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(service.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
-    public Ideia atualizar(@PathVariable Long id,
-                           @RequestBody IdeiaUpdateDTO dto,
-                           @RequestHeader("X-Professor-Id") Long professorId) {
-        return service.atualizar(id, dto, professorId);
+    public ResponseEntity<Void> atualizar(
+            @PathVariable Long id,
+            @RequestBody IdeiaUpdateDTO dto,
+            @RequestHeader("X-Professor-Id") Long professorId
+    ) {
+        service.atualizar(id, dto, professorId);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
@@ -72,7 +74,16 @@ public class IdeiaController {
 
     //Lista todas as ideias de um professor pelo seu ID
     @GetMapping("/professor/{id}")
-    public List<Ideia> listarPorProfessor(@PathVariable Long id) {
-        return service.listarPorProfessor(id);
+    public List<IdeiaListaDTO> listarPorProfessor(@PathVariable Long id) {
+        return service.listarPorProfessor(id).stream().map(ideia -> new IdeiaListaDTO(
+                ideia.getId(),
+                ideia.getTitulo(),
+                ideia.getDescricao(),
+                ideia.getCursos(),
+                ideia.getTecnologias(),
+                ideia.getStatus(),
+                ideia.getProfessor().getUsuario().getNome(),
+                ideia.getProfessor().getDepartamento()
+        )).toList();
     }
 }

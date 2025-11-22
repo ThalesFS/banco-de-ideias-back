@@ -10,7 +10,10 @@ public class Ideia {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long professorId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "professor_id", nullable = false)
+    private Professor professor;
+
     private String titulo;
     @Column(length = 3000)
     private String descricao;
@@ -26,13 +29,6 @@ public class Ideia {
     }
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getProfessorId() {
-        return professorId;
-    }
-    public void setProfessorId(Long professorId) {
-        this.professorId = professorId;
     }
 
     public String getTitulo() {
@@ -68,5 +64,13 @@ public class Ideia {
     }
     public void setStatus(StatusIdeia status) {
         this.status = status;
+    }
+
+    public Professor getProfessor() {
+        return professor;
+    }
+
+    public void setProfessor(Professor professor) {
+        this.professor = professor;
     }
 }
