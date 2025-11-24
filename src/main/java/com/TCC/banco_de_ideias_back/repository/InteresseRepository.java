@@ -9,6 +9,7 @@ public interface InteresseRepository extends JpaRepository<Interesse, Long> {
 
     List<Interesse> findByAlunoId(Long alunoId);
     List<Interesse> findByIdeiaId(Long ideiaId);
+    Interesse findByAlunoIdAndIdeiaId(Long alunoId, Long ideiaId);
 
     boolean existsByAlunoIdAndIdeiaId(Long alunoId, Long ideiaId);
 
