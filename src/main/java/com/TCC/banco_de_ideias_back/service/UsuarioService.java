@@ -4,6 +4,7 @@ import com.TCC.banco_de_ideias_back.dto.UsuarioCadastroDTO;
 import com.TCC.banco_de_ideias_back.model.*;
 import com.TCC.banco_de_ideias_back.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,21 +18,28 @@ public class UsuarioService {
     private final AlunoRepository alunoRepository;
     private final ProfessorRepository professorRepository;
 
+    private final BCryptPasswordEncoder passwordEncoder;
+
     public List<Usuario> listar(){
         return usuarioRepository.findAll();
     }
 
-    public UsuarioService(UsuarioRepository usuarioRepository, AlunoRepository alunoRepository, ProfessorRepository professorRepository) {
+    @Autowired
+    public UsuarioService(UsuarioRepository usuarioRepository, AlunoRepository alunoRepository, ProfessorRepository professorRepository, BCryptPasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.alunoRepository = alunoRepository;
         this.professorRepository = professorRepository;
+        this.passwordEncoder = passwordEncoder;
     }
     public Usuario cadastrar(UsuarioCadastroDTO dto){
         Usuario usuario = new Usuario();
         usuario.setNome(dto.nome);
         usuario.setEmail(dto.email);
         usuario.setMatricula(dto.matricula);
-        usuario.setSenha(dto.senha);
+
+        String senhaCripto = passwordEncoder.encode(dto.senha);
+        usuario.setSenha(senhaCripto);
+
         usuario.setTipo(Usuario.TipoUsuario.valueOf(dto.tipo));
 
         usuario = usuarioRepository.save(usuario);
@@ -56,11 +64,12 @@ public class UsuarioService {
         if (usuarioOptional.isEmpty()) return false;
 
         Usuario usuario = usuarioOptional.get();
-
-        if(!usuario.getSenha().equals(senhaAtual)){
-            return false; //senhas nao bateram
+        boolean senhaConfere = passwordEncoder.matches(senhaAtual, usuario.getSenha());
+        if (!senhaConfere){
+            return false;
         }
-        usuario.setSenha(novaSenha);
+        String novaSenhaCripto = passwordEncoder.encode(novaSenha);
+        usuario.setSenha(novaSenhaCripto);
         usuarioRepository.save(usuario);
         return true;
     }

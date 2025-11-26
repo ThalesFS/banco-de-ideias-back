@@ -24,6 +24,13 @@ public class IdeiaService {
     @Autowired
     private final ProfessorRepository professorRepository;
 
+    public class NotFoundException extends RuntimeException {
+        public NotFoundException(String msg) { super(msg); }
+    }
+    public class ForbiddenException extends RuntimeException {
+        public ForbiddenException(String msg) { super(msg); }
+    }
+
     public Page<IdeiaListaDTO> listarIdeias(String busca, StatusIdeia statusIdeia, int page, int size){
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
@@ -82,10 +89,10 @@ public class IdeiaService {
 
     public void atualizar(Long id, IdeiaUpdateDTO dto, Long professorId) {
         Ideia ideia = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ideia não encontrada."));
+                .orElseThrow(() -> new NotFoundException("Ideia não encontrada."));
 
         if (!ideia.getProfessor().getId().equals(professorId)) {
-            throw new RuntimeException("Acesso negado! Somente o dono da ideia pode atualiza-la.");
+            throw new ForbiddenException("Acesso negado! Somente o dono da ideia pode atualiza-la.");
         }
 
         ideia.setTitulo(dto.getTitulo());
@@ -99,10 +106,10 @@ public class IdeiaService {
 
     public void deletar(Long id, Long professorId) {
         Ideia ideia = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ideia não encontrada"));
+                .orElseThrow(() -> new NotFoundException("Ideia não encontrada"));
 
         if (!ideia.getProfessor().getId().equals(professorId)) {
-            throw new RuntimeException("Acesso negado! Somente o dono da ideia pode atualiza-la.");
+            throw new ForbiddenException("Acesso negado! Somente o dono da ideia pode atualiza-la.");
         }
         repository.deleteById(id);
     }

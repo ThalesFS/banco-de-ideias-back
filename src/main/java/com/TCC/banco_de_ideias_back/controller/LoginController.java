@@ -4,6 +4,7 @@ import com.TCC.banco_de_ideias_back.dto.LoginResponseDTO;
 import com.TCC.banco_de_ideias_back.dto.LoginDTO;
 import com.TCC.banco_de_ideias_back.model.Usuario;
 import com.TCC.banco_de_ideias_back.repository.UsuarioRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 // aparentemente https nao aparece pro CORS
@@ -13,17 +14,26 @@ import org.springframework.web.bind.annotation.*;
 public class LoginController {
 
     private final UsuarioRepository usuarioRepository;
-    public LoginController(UsuarioRepository usuarioRepository) {
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    public LoginController(UsuarioRepository usuarioRepository, BCryptPasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping
     public LoginResponseDTO login(@RequestBody LoginDTO loginDTO){
 
-        Usuario usuario = usuarioRepository.findByEmailAndSenha(loginDTO.email, loginDTO.senha);
+        Usuario usuario = usuarioRepository.findByEmail(loginDTO.email);
 
         if(usuario == null){
-            throw  new RuntimeException("Credenciais invalidas ou usuario inexistente");
+            throw  new RuntimeException("Email nao encontrado");
+        }
+
+        boolean senhaConfere = passwordEncoder.matches(loginDTO.senha, usuario.getSenha());
+
+        if (!senhaConfere) {
+            throw new RuntimeException("Senha incorreta!");
         }
 
         return new LoginResponseDTO(usuario.getId(), usuario.getNome(), usuario.getTipo().name());
