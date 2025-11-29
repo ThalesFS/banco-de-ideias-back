@@ -31,7 +31,7 @@ public class IdeiaService {
         public ForbiddenException(String msg) { super(msg); }
     }
 
-    public Page<IdeiaListaDTO> listarIdeias(String busca, StatusIdeia statusIdeia, int page, int size){
+    /*public Page<IdeiaListaDTO> listarIdeias(String busca, StatusIdeia statusIdeia, int page, int size){
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
@@ -56,6 +56,24 @@ public class IdeiaService {
                     professor != null ? professor.getUsuario().getNome():"Desconhecido",
                     professor != null ? professor.getDepartamento():"-");
         });
+    }*/
+
+    public Page<IdeiaListaDTO> listarIdeias(String busca, StatusIdeia statusIdeia, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+        Page<Ideia> pagina = repository.buscarAvancada(busca, statusIdeia, pageable);
+
+        return pagina.map(ideia -> new IdeiaListaDTO(
+                ideia.getId(),
+                ideia.getTitulo(),
+                ideia.getDescricao(),
+                ideia.getCursos(),
+                ideia.getTecnologias(),
+                ideia.getStatus(),
+                ideia.getProfessor().getUsuario().getNome(),
+                ideia.getProfessor().getDepartamento()
+        ));
     }
 
     public IdeiaService(IdeiaRepository repository, ProfessorRepository professorRepository) {
